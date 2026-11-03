@@ -4,7 +4,7 @@ A lightweight monthly budget tracker that runs directly in your browser. It is a
 
 ## Use
 
-Open `karchulu.html` in a browser. Use the arrows in the header to move between months. Each month is organized into Income, Loans, Expenses, and Credit cards.
+Open `index.html` in a browser to launch the app; you can also open `karchulu.html` directly. Use the arrows in the header to move between months. Each month is organized into Income, Loans, Expenses, and Credit cards.
 
 - Add rows and edit their names and planned amounts.
 - Mark an outflow as done to enable its actual amount. Actuals default to the planned amount and can be edited; income actuals follow the same rule.
