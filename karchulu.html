@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>Karchulu</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#14181f;--mut:#6b7280;--line:#e5e7eb;--acc:#0f766e;--pos:#15803d;--neg:#b91c1c;--inp:#f3f4f6;--c-inc:#16a34a;--c-loan:#ea580c;--c-exp:#2563eb;--c-card:#7c3aed;--hg:linear-gradient(135deg,#0f766e,#4f46e5);--tx-ex:#c2410c}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--tx:#e6edf3;--mut:#8b949e;--line:#262d36;--acc:#2dd4bf;--pos:#4ade80;--neg:#f87171;--inp:#1f262f;--c-inc:#4ade80;--c-loan:#fb923c;--c-exp:#60a5fa;--c-card:#a78bfa;--hg:linear-gradient(135deg,#134e4a,#312e81);--tx-ex:#fb923c}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between}
+.nav b{font-size:17px}.nav .mid{text-align:center;line-height:1.2}.nav small{display:block;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.nav button{width:40px;height:36px;border:0;border-radius:10px;background:var(--card);color:var(--tx);font-size:20px}
+.dash{margin:12px 14px 0;background:var(--card);border-radius:18px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.t{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}.sm{font-size:12px;color:var(--mut)}
+.net{font-size:32px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.ring{width:118px;height:118px;border-radius:50%;display:grid;place-items:center;flex:none;background:#e5e7eb}
+.ring>div{width:84px;height:84px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center}
+.ring span{display:block;text-align:center;line-height:1}
+.ring b{font-size:20px;display:block;line-height:1;margin-bottom:4px}.ring small{font-size:10px;line-height:1.25;display:block;color:var(--mut)}
+.leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:12px;color:var(--mut)}
+.leg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}.leg b{color:var(--tx);font-weight:600}
+.row2{display:flex;gap:8px;margin:8px 14px 0}.cd{flex:1;background:var(--card);border-radius:16px;padding:8px 10px}
+.v{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.ci{color:var(--pos)}.ce{color:var(--tx-ex)}
+.sub{margin:6px 14px 0;color:var(--mut);font-size:12px;text-align:right}
+.s-inc{--sc:var(--c-inc)}.s-loan{--sc:var(--c-loan)}.s-exp{--sc:var(--c-exp)}.s-card{--sc:var(--c-card)}
+section{margin:14px 14px 0;background:var(--card);border-radius:14px;border-left:5px solid var(--sc);padding:6px 10px 10px}
+.chev{text-align:center;transition:transform .15s}
+.col .chev{transform:rotate(-90deg)}
+.col .row,.col .add{display:none}
+.hd b{font-size:10px;font-weight:650;padding:2px 7px;border-radius:99px;margin-left:4px;background:color-mix(in srgb,var(--sc) 18%,transparent);letter-spacing:0}
+.row,.hd,.cols{display:grid;grid-template-columns:22px 1fr 78px 78px 24px;gap:5px;align-items:center}
+.hd{cursor:pointer;user-select:none;margin:8px 0 2px;font-size:13px;color:var(--sc);text-transform:uppercase;letter-spacing:.05em;font-weight:650}
+.hd i{font-style:normal;color:var(--tx);text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+.cols{font-size:10px;color:var(--mut);text-transform:uppercase;text-align:right}
+.row{padding:3px 4px;margin:0 -4px;border-radius:8px}
+.row.paid{background:color-mix(in srgb,var(--sc) 10%,transparent)}
+.row input[type=text]{border:0;background:var(--inp);color:var(--tx);border-radius:8px;padding:9px 6px;font:inherit;min-width:0;width:100%}
+.row .am{text-align:right;font-variant-numeric:tabular-nums}
+.row .ac:disabled{background:transparent;opacity:1;color:var(--mut);-webkit-text-fill-color:var(--mut)}
+.row .ac:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--sc)}
+.row .ac.over{color:var(--neg);-webkit-text-fill-color:var(--neg)}
+.row input[type=checkbox]{width:20px;height:20px;accent-color:var(--sc);margin:0}
+.row.paid .nm,.row.paid .pl{opacity:.55}
+.row .x{border:0;background:none;color:var(--mut);font-size:18px;height:32px;padding:0}
+.add{width:100%;margin-top:6px;border:1px dashed color-mix(in srgb,var(--sc) 50%,transparent);background:none;color:var(--sc);border-radius:10px;padding:9px;font:inherit;font-weight:600}
+.banner{margin:14px 14px 0;padding:12px;border-radius:12px;background:var(--card);display:flex;gap:8px;align-items:center;justify-content:space-between}
+.banner button,.tools button{border:0;background:var(--acc);color:#fff;border-radius:9px;padding:9px 12px;font:inherit;font-weight:600}
+@media(prefers-color-scheme:dark){.banner button,.tools button{color:#04201c}}
+.tools{margin:18px 14px 0;display:flex;gap:8px}
+.tools button{flex:1;background:var(--card);color:var(--tx)}
+.hint{margin:10px 14px 0;color:var(--mut);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="nav"><button id="prev" aria-label="Previous month">‹</button><div class="mid"><b id="mlabel"></b><small id="mnet"></small></div><button id="next" aria-label="Next month">›</button></div>
+  </header>
+  <div class="dash">
+    <div class="hero">
+      <div><div class="t">Net · actual</div><div class="net" id="anet"></div><div class="sm">Plan <span id="pnet"></span></div></div>
+      <div class="ring" id="ring"><div><span><b id="pct"></b><small>of income<br>spent</small></span></div></div>
+    </div>
+    <div class="leg" id="leg"></div>
+  </div>
+  <div class="row2">
+    <div class="cd"><div class="t">Income</div><div class="v ci" id="ain"></div><div class="sm">Plan <span id="pin"></span></div></div>
+    <div class="cd"><div class="t">Expense</div><div class="v ce" id="aex"></div><div class="sm">Plan <span id="pex"></span></div></div>
+  </div>
+  <div class="sub" id="unpaid"></div>
+  <div id="banner"></div>
+  <div id="body"></div>
+  <div class="tools"><button id="exp">Export</button><button id="imp">Import</button></div>
+  <p class="hint">Karchulu · data is stored on this device only. Export to back up.</p>
+  <input type="file" id="file" accept="application/json" hidden>
+</div>
+<script>
+(()=>{
+const KEY='ktp-bills-v1';
+const SECS=[['inc','Income'],['loan','Loans'],['exp','Expenses'],['card','Credit cards']];
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const $=s=>document.querySelector(s);
+const fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+// ---- state
+let S=load();
+let cur=S.last||keyOf(new Date());
+function keyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.months)return s}catch(e){}
+  return {months:{},last:null,seeded:false}}
+function save(){S.last=cur;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+// ---- seed from the original sheet (₹)
+function seed(){
+  const r=(sec,name,amt)=>({id:uid(),sec,name,amt:amt||0,paid:false});
+  const cards=['sbi','axis mz','axis io','icici','icici amz','bob','bob rupay','one','rbl','pnb','indusind','indusind rupay','kotak','hdfc neu','hdfc','yes','yes rupay','hsbc','axis airtel','idfc','idfc rupay','au','hdfc rupay','pnb kiwi'];
+  return [r('inc','sal',227000),r('inc','others'),
+    r('loan','HL',64000),r('loan','PL'),r('loan','CL',22350),
+    r('exp','home',6600),r('exp','apy',1800),r('exp','MF',2000),r('exp','school'),r('exp','lic'),r('exp','auto',1200),
+    r('exp','music'),r('exp','tuition j',2000),r('exp','karate',1500),r('exp','2k_bkp'),r('exp','N',6000),
+    ...cards.map(c=>r('card',c,c==='sbi'?121000:0))];
+}
+function rows(){return S.months[cur]||null}
+function ensure(){
+  if(!S.months[cur]){
+    if(!S.seeded&&!Object.keys(S.months).length){S.months[cur]=seed();S.seeded=true;save();}
+    else{
+      const prev=Object.keys(S.months).filter(k=>k<cur&&S.months[k].length).sort().pop();
+      if(prev){S.months[cur]=S.months[prev].map(r=>({...r,id:uid(),paid:false,act:null}));save();}
+    }
+  }
+  return S.months[cur];
+}
+
+// ---- parse "6.6k", "1+0.8", "1,200"
+function parseAmt(t){
+  t=String(t).toLowerCase().replace(/[₹,\s]/g,'');if(!t)return 0;
+  let sum=0;
+  for(const p of t.split('+')){
+    const m=p.match(/^(-?\d*\.?\d+)(k|l)?$/);if(!m)return NaN;
+    sum+=parseFloat(m[1])*(m[2]==='k'?1e3:m[2]==='l'?1e5:1);
+  }
+  return sum;
+}
+const show=n=>n?Math.round(n*100)/100===Math.round(n)?Math.round(n).toLocaleString('en-IN'):n.toLocaleString('en-IN'):'';
+
+// ---- totals
+// actual = plan until ticked; once ticked, actual = edited value (or plan if never edited)
+const eff=r=>r.paid&&r.act!=null?r.act:r.amt;
+function totals(){
+  const p={inc:0,loan:0,exp:0,card:0},a={inc:0,loan:0,exp:0,card:0};let unpaid=0;
+  for(const r of rows()||[]){p[r.sec]+=r.amt;a[r.sec]+=eff(r);if(r.sec!=='inc'&&!r.paid)unpaid+=r.amt}
+  for(const o of [p,a]){o.ex=o.loan+o.exp+o.card;o.net=o.inc-o.ex}
+  return {p,a,unpaid};
+}
+function updTotals(){
+  const {p,a,unpaid}=totals();
+  const set=(id,v)=>{const e=$('#'+id);e.textContent=(v<0?'-':'')+fmt(Math.abs(v));return e};
+  set('pin',p.inc);set('pex',p.ex);set('ain',a.inc);set('aex',a.ex);
+  set('pnet',p.net).className=p.net<0?'neg':'pos';
+  set('anet',a.net).className='net '+(a.net<0?'neg':'pos');
+  const mn=set('mnet',a.net);mn.className=a.net<0?'neg':'pos';mn.textContent='Net '+mn.textContent;
+  const D=Math.max(a.inc,a.ex),pc=x=>D?x/D*100:0,c1=pc(a.loan),c2=c1+pc(a.exp),c3=c2+pc(a.card);
+  $('#ring').style.background=D?`conic-gradient(#ea580c 0 ${c1}%,#2563eb 0 ${c2}%,#7c3aed 0 ${c3}%,#16a34a 0)`:'#e5e7eb';
+  const sp=a.inc?Math.round(a.ex/a.inc*100):null,pe=$('#pct');pe.textContent=sp==null?'–':sp+'%';pe.className=sp>100?'neg':'';
+  const sh=x=>a.inc?Math.round(x/a.inc*100)+'%':'–';
+  $('#leg').innerHTML=[['#ea580c','Loans',a.loan],['#2563eb','Expenses',a.exp],['#7c3aed','Cards',a.card],['#16a34a','Left',Math.max(0,a.inc-a.ex)]]
+    .map(([c,l,v])=>'<span><i style="background:'+c+'"></i>'+l+' <b>'+sh(v)+'</b></span>').join('');
+  $('#unpaid').textContent=unpaid?'Unpaid: '+fmt(unpaid):'';
+  for(const [k] of SECS){const e=$('#pt-'+k);if(e){e.textContent=fmt(p[k]);$('#at-'+k).textContent=fmt(a[k]);
+    const rs=(rows()||[]).filter(r=>r.sec===k);$('#ct-'+k).textContent=rs.filter(r=>r.paid).length+'/'+rs.length}}
+}
+
+// ---- render
+function render(){
+  const [y,m]=cur.split('-');$('#mlabel').textContent=MN[m-1]+' '+y;
+  const data=ensure();if(!S.collapsed)S.collapsed={card:true};
+  const bn=$('#banner');bn.innerHTML='';
+  const body=$('#body');body.innerHTML='';
+  if(!data||!data.length){
+    const prev=Object.keys(S.months).filter(k=>k<cur&&S.months[k].length).sort().pop();
+    const d=document.createElement('div');d.className='banner';
+    d.innerHTML='<span>Empty month</span>';
+    if(prev){const b=document.createElement('button');b.textContent='Copy from '+MN[prev.split('-')[1]-1];
+      b.onclick=()=>{S.months[cur]=S.months[prev].map(r=>({...r,id:uid(),paid:false,act:null}));save();render()};d.appendChild(b)}
+    bn.appendChild(d);
+    if(!S.months[cur])S.months[cur]=[];
+  }
+  for(const [k,label] of SECS){
+    const sec=document.createElement('section');sec.className='s-'+k+(S.collapsed[k]?' col':'');
+    sec.innerHTML='<div class="hd"><span class="chev">▾</span><span>'+label+' <b id="ct-'+k+'"></b></span><i id="pt-'+k+'"></i><i id="at-'+k+'"></i><span></span></div><div class="cols"><span></span><span></span><span>Plan</span><span>Actual</span><span></span></div>';
+    sec.querySelector('.hd').onclick=()=>{S.collapsed[k]=!S.collapsed[k];sec.classList.toggle('col');save()};
+    for(const r of S.months[cur].filter(r=>r.sec===k))sec.appendChild(rowEl(r));
+    const a=document.createElement('button');a.className='add';a.textContent='+ Add';
+    a.onclick=()=>{const r={id:uid(),sec:k,name:'',amt:0,paid:false};S.months[cur].push(r);save();
+      const el=rowEl(r);sec.insertBefore(el,a);el.querySelector('.nm').focus();updTotals()};
+    sec.appendChild(a);body.appendChild(sec);
+  }
+  updTotals();
+}
+function rowEl(r){
+  const d=document.createElement('div');d.className='row'+(r.paid?' paid':'');
+  d.innerHTML='<input type="checkbox" aria-label="Done"'+(r.paid?' checked':'')+'>'+
+    '<input type="text" class="nm" placeholder="name" autocapitalize="none">'+
+    '<input type="text" class="am pl" inputmode="decimal" placeholder="0">'+
+    '<input type="text" class="am ac" inputmode="decimal" placeholder="0">'+
+    '<button class="x" aria-label="Delete">×</button>';
+  const nm=d.querySelector('.nm'),pl=d.querySelector('.pl'),ac=d.querySelector('.ac'),cb=d.querySelector('[type=checkbox]');
+  const syncAc=()=>{ac.disabled=!r.paid;ac.value=show(eff(r));ac.classList.toggle('over',r.sec!=='inc'&&eff(r)>r.amt)};
+  nm.value=r.name;pl.value=show(r.amt);syncAc();
+  nm.oninput=()=>{r.name=nm.value;save()};
+  pl.onfocus=()=>{pl.value=r.amt||'';pl.select()};
+  pl.oninput=()=>{const v=parseAmt(pl.value);if(!isNaN(v)){r.amt=v;save();syncAc();updTotals()}};
+  pl.onblur=()=>{const v=parseAmt(pl.value);if(!isNaN(v))r.amt=v;pl.value=show(r.amt);save();syncAc();updTotals()};
+  ac.onfocus=()=>{ac.value=eff(r)||'';ac.select()};
+  ac.oninput=()=>{const v=parseAmt(ac.value);if(!isNaN(v)){r.act=v;save();updTotals()}};
+  ac.onblur=()=>{const v=parseAmt(ac.value);if(!isNaN(v))r.act=v;syncAc();save();updTotals()};
+  cb.onchange=()=>{r.paid=cb.checked;d.classList.toggle('paid',r.paid);syncAc();save();updTotals()};
+  d.querySelector('.x').onclick=()=>{if(!r.name&&!r.amt||confirm('Delete "'+(r.name||'row')+'"?')){
+    S.months[cur]=S.months[cur].filter(x=>x.id!==r.id);save();d.remove();updTotals()}};
+  return d;
+}
+
+// ---- nav
+function shift(n){const [y,m]=cur.split('-').map(Number);cur=keyOf(new Date(y,m-1+n,1));save();render();window.scrollTo(0,0)}
+$('#prev').onclick=()=>shift(-1);$('#next').onclick=()=>shift(1);
+
+// ---- backup
+$('#exp').onclick=()=>{
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
+  a.download='karchulu-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+$('#imp').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  f.text().then(t=>{try{const s=JSON.parse(t);if(!s.months)throw 0;
+    if(confirm('Replace all current data with this file?')){S=s;S.seeded=true;cur=S.last||cur;save();render()}}
+    catch(_){alert('Invalid backup file')}});
+  e.target.value='';
+};
+
+render();
+})();
+</script>
+</body>
+</html>
